@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/plugins/steps/jquery.steps.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-5">
+		<div class="jumbotron">
+			{% comment %} <h1>Pasos</h1> {% endcomment %}
+			<h2>Segundo paso</h2>
+			{% comment %} <p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
+			<hr>
+			{% comment %} <h2>Detalles</h2>
+			<p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
+		</div>
+	</div>
+	<div class="col-lg-7">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>{{link_info.link_name}}</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-sm-12 b-r">
+						<form role="form" method="post" enctype="multipart/form-data" >
+							{% csrf_token %}
+							<div class="input-group" style="display:none" id = "step" step="1" >
+								<input name="steps" type="text" class="form-control"> 
+								
+								<span class="input-group-btn"> 
+									<button id="test" onclick="remove(this)" type="button" class="btn btn-secondary" >
+										-
+									</button> 
+								</span>
+							</div>
+
+							<div class="input-group">
+								<input name="steps" type="text" class="form-control" placeholder="Escriba el nombre de la etapa" > 
+								<span class="input-group-btn"> 
+									<button onclick="add()" type="button" class="btn btn-primary">
+										+
+									</button> 
+								</span>
+							</div>
+							<div id="container">
+								
+							</div>
+							<hr>
+							<div class="text-center">
+								<label>Ingresa un comentario</label> 
+
+								<textarea  required name="comments" placeholder ="dasdf" class = "form-control" rows="4" >
+									
+								</textarea>
+
+							</div>
+							<br>
+							<br>
+							
+							<div class=" text-center">
+								<label>Sube archivos</label> 
+
+								<input name="file" type="file"/>
+
+							</div>
+							<div class="container">
+							</div>
+							<hr>
+
+							<div class="form-group">
+								<div class="col-sm-12 ">
+									
+									<a class="btn btn-white" disabled data-toggle="modal" class="btn btn-primary" href="">Vista previa</a>
+									<button  class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit">
+										<strong>Crear link</strong>
+									</button>
+								</div>
+							</div>							 
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-form" class="modal fade in" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12 b-r">
+						<h3 class="m-t-none m-b text-center">¡Status Link generado correctamente!</h3>
+
+						<div class="text-center">
+							{% comment %} <a class=""></a> {% endcomment %}
+
+							<a type="button" class="btn btn-block btn-outline btn-default">https://sta.link./process/step1</a>
+							
+						</div>
+						<br>
+						<div class="text-center">
+							<a type="button" class="btn btn-block  btn-default">Copiar al portapapeles</a>
+							
+						</div>
+						<br>
+						<div class="text-center">
+							<a type="button" class="btn btn-block btn-outline btn-success">Código QR</a>
+
+						</div>
+
+						<hr>
+
+						<div class="text-center">
+							<a type="button" class="btn btn-block btn-outline btn-primary">WHATSAPP</a>
+
+						</div>
+
+						<br>
+						<div class="text-center">
+							<a type="button" class="btn btn-block btn-outline btn-info">Generar otro link</a>
+
+						</div>
+
+						<br>
+						<div class="text-center">
+							<a type="button" class="btn btn-block btn-outline btn-default">Ver links</a>
+
+						</div>
+
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+	$("#example").steps({
+		headerTag: "h1",
+		bodyTag: "section",
+		transitionEffect: "slideLeft",
+		autoFocus: true
+	});
+	function add(){
+		console.log('acabo de clonar');
+
+		const node = document.getElementById("step");
+		
+		const clone = node.cloneNode(true);
+		clone.style.display=""
+		let step = parseInt(clone.getAttribute("step")) + 1
+		clone.placeholder = `Etapa ${step}`
+
+
+		document.getElementById("container").appendChild(clone);
+	}
+
+	function remove(data){
+		console.log(data.parentElement.parentElement.remove())
+	}
+
+
+
+	{% comment %} var original = document.getElementById("ID");
+	var clone = original.cloneNode(true);
+	clone.removeAttribute("id");
+	document.getElementById("ID").appendChild(clone); {% endcomment %}
+</script>
+{% endblock %}

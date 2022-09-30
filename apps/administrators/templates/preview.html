@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/plugins/steps/jquery.steps.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-6">
+		<div class="jumbotron">
+			<h2>Instrucciones</h2>
+			<p>Haga tap en <b>"Finalizar etapa"</b> para marcar como terminada. </p>
+			<hr>
+		</div>
+	</div>
+	<div class="col-lg-6">
+
+
+		{% for step in steps %}
+		<div class="ibox float-e-margins">
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-sm-12 b-r text-center">
+						<h1>{{step.step_name}}</h1>
+						<form role="form" method="post">
+							{% csrf_token %}
+							<input name="step" type="hidden" class="form-control" value = {{step.pk}} > 
+							{% if step.is_done == True %}
+								<button class="btn btn-primary btn-block " type="submit">Finalizado</button>
+							{% else %}
+								<button class="btn btn-default btn-block " type="submit">Finalizar etapa</button>
+
+							{% endif %}
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}   
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Comentarios y adjuntos
+			</div>
+			<div class="panel-body">
+				<p>{{link_info.comments}}</p>
+				<hr>
+				<p> 
+					{% if link_info.attachment is null %}
+						<span class="badge bg-gradient-light">
+							No existe adjunto 
+						</span> 
+					{% else %} 
+						<a href="{{link_info.attachment.url}}" class="badge badge-primary">Descargar Adjunto</a> 
+					{% endif %} 
+				</p>
+
+			</div>
+
+		</div>
+	   
+	</div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
