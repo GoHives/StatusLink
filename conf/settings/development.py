@@ -38,7 +38,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # =================SECURITY=================
 ALLOWED_HOSTS = [
-	"apiinstance.onrender.com",
+	# "apiinstance.onrender.com",
+	"statuslink.onrender.com",
 	"localhost",
 	"0.0.0.0",
 	"127.0.0.1",
