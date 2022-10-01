@@ -9,6 +9,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.urls import reverse_lazy
+from django.http import JsonResponse
+
 
 
 
@@ -76,7 +78,7 @@ class LinkGeneratorFinalStepView(View):
 		return reverse('administrators:opened_links')
 
 
-class PreviewView(View):
+class LinkDetailView(View):
 	model = ProcessSteps
 
 	def get(self,request,**kwargs):
@@ -87,7 +89,7 @@ class PreviewView(View):
 		link_info=LinkInfo.objects.get(pk=pk)
 		context['steps'] = processes
 		context['link_info'] = link_info
-		return render(request, 'preview.html',context)
+		return render(request, 'detail.html',context)
 
 	def post(self, request, **kwargs):     
 		# comment = request.POST.get('comment',None)
@@ -134,4 +136,34 @@ class OpenedLinksView(CreateView):
 class LinksDeleteView(DeleteView):
 	model = LinkInfo
 	success_url = reverse_lazy("administrators:opened_links")
+
+
+class GetLinkView(View):
+	context_object_name = 'calendar_homeworks_list'
+
+	def get(self, request, **kwargs):
+		pk=self.kwargs.get('pk', None)
+		
+		
+		link_info = LinkInfo.objects.filter(pk=pk).values('pk')
+		
+		return JsonResponse(list(link_info), status = 200,safe=False)
+
+
+
+class FinalLinkView(View):
+
+	def get(self,request,**kwargs):
+		context={}
+		pk=self.kwargs.get('pk', None)
+
+		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
+		link_info=LinkInfo.objects.get(pk=pk)
+		context['steps'] = processes
+		context['link_info'] = link_info
+		return render(request, 'final_link.html',context)
+
+
+
+
 

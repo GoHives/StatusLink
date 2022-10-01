@@ -48,12 +48,13 @@
 				<p>{{link_info.comments}}</p>
 				<hr>
 				<p> 
-					{% if link_info.attachment is null %}
-						<span class="badge bg-gradient-light">
-							No existe adjunto 
-						</span> 
+
+					{% if link_info.attachment %}
+                        <a href="{{link_info.attachment.url}}" class="badge badge-primary">Descargar Adjunto</a> 
 					{% else %} 
-						<a href="{{link_info.attachment.url}}" class="badge badge-primary">Descargar Adjunto</a> 
+                        <span class="badge bg-gradient-light">
+                            No existe adjunto 
+                        </span> 
 					{% endif %} 
 				</p>
 
