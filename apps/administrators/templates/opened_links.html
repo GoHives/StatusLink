@@ -149,8 +149,15 @@
 			}
 			async function copyToClipBoard(){
 				
-
-				alert("¡Copiado!");
+				var content = document.getElementById('generated_link').innerHTML;
+	
+				navigator.clipboard.writeText(content)
+					.then(() => {
+						alert("¡Copiado!");
+				})
+			
+				
+				
 			}
 	</script>
 	{% endblock %}

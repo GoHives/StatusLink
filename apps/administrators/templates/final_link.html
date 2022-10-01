@@ -25,11 +25,18 @@
 <body class="gray-bg">
 
 
-    <div class="middle-box text-center animated fadeInDown">
-
+    {% comment %} <div class=" text-center "> {% endcomment %}
+    <div class="wrapper wrapper-content animated  fadeInDown">
         {% block content %}
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-6">
+                <div class="jumbotron">
+                    <h2>Instrucciones</h2>
+                    <p>Aquí puedes ver tu proceso</p>
+                    <hr>
+                </div>
+            </div>
+            <div class="col-lg-6">
                 <h2><b>{{link_info.link_name}}<b></h2>
                 {% for step in steps %}
                 <div class="ibox float-e-margins">
