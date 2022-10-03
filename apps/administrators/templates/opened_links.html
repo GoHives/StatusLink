@@ -159,5 +159,10 @@
 				
 				
 			}
+			{% if link %}
+				console.log('jeje existe')
+				getLink({{link}})
+				//$('#modal-form').modal('show');
+			{% endif %}
 	</script>
 	{% endblock %}

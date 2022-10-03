@@ -4,6 +4,7 @@
 # Django
 from concurrent.futures import process
 from operator import is_
+from urllib import request
 from django.views.generic import View,CreateView,TemplateView,DeleteView,DetailView
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -50,7 +51,7 @@ class LinkGeneratorFinalStepView(View):
 		context['link_info'] = link_info
 		return render(request, 'link_generator_final_step.html',context)
 	
-	def post(self, request, **kwargs):     
+	def post(self, request, **kwargs):	
 		pk=self.kwargs.get('pk', None)
 
 		comments = request.POST.get('comments',None)
@@ -58,7 +59,7 @@ class LinkGeneratorFinalStepView(View):
 
 		last_link = LinkInfo.objects.get(pk=pk)
 		last_link.comments = comments
-		last_link.attachment = request.FILES['file']
+		last_link.attachment = request.FILES.get('file',None)
 		last_link.save()
 		
 		steps = request.POST.getlist('steps',None)
@@ -70,8 +71,12 @@ class LinkGeneratorFinalStepView(View):
 				process_steps = ProcessSteps()
 				process_steps.step_name = step
 				process_steps.link_info = last_link
-				process_steps.save()		
+				process_steps.save()
 
+
+
+		# guardar lo creado en una session
+		self.request.session['last_link'] = last_link.pk
 		return HttpResponseRedirect(self.get_success_url())
 
 	def get_success_url(self):
@@ -128,14 +133,42 @@ class LinkDetailView(View):
 class OpenedLinksView(CreateView):
 	def get(self, request, **kwargs):
 		context={}
+		if self.verify_session() == None:
+			print('no hacer nada')
+		else:
+			context['link'] = self.verify_session()
+			del self.request.session['last_link']
 		opened_links = LinkInfo.objects.all().order_by('pk')
 		context['opened_links'] = opened_links
 		return render(request, 'opened_links.html',context)
 
+	def verify_session(self):	
+		if 'last_link' in self.request.session:
+			return self.request.session['last_link']
+		else:
+			return None
 
 class LinksDeleteView(DeleteView):
 	model = LinkInfo
 	success_url = reverse_lazy("administrators:opened_links")
+
+
+class CancelView(View):
+	def get(self, request, **kwargs):
+		print('cancelar')
+		context={}
+		pk=self.kwargs.get('pk', None)
+		print('verificar',pk)
+		LinkInfo.objects.get(pk=pk).delete()
+		print('borra')
+
+		return HttpResponseRedirect(self.get_success_url())
+
+		# return reverse("administrators:link_generator")
+
+	def get_success_url(self):
+			# return reverse('teachers:planifications_list', )
+		return reverse("administrators:link_generator")		# return render(request, 'opened_links.html',context)
 
 
 class GetLinkView(View):

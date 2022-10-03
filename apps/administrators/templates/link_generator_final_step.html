@@ -12,8 +12,8 @@
 		<div class="jumbotron">
 			{% comment %} <h1>Pasos</h1> {% endcomment %}
 			<h2>Segundo paso</h2>
-            <p>
-                Ingrese cada una de las etapas que serán vistas por la persona que recibirá el link. Adicione una nueva etapa dando clic en signo <b>“+”</b> ,y elmine una etapa con el signo <b>"-"</b>.			{% comment %} <p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
+			<p>
+				Ingrese cada una de las etapas que serán vistas por la persona que recibirá el link. Adicione una nueva etapa dando clic en signo <b>“+”</b> ,y elmine una etapa con el signo <b>"-"</b>.			{% comment %} <p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
 			<hr>
 			{% comment %} <h2>Detalles</h2>
 			<p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
@@ -54,9 +54,7 @@
 							<div class="text-center">
 								<label>Ingresa un comentario</label> 
 
-								<textarea  required name="comments" placeholder ="dasdf" class = "form-control" rows="4" >
-									
-								</textarea>
+								<textarea  required name="comments" placeholder ="" class = "form-control" rows="4" ></textarea>
 
 							</div>
 							<br>
@@ -75,7 +73,17 @@
 							<div class="form-group">
 								<div class="col-sm-12 ">
 									
-									<a class="btn btn-white" disabled data-toggle="modal" class="btn btn-primary" href="">Vista previa</a>
+									{% comment %} <a class="btn btn-white" data-toggle="modal" class="btn btn-info" href="">Vista previa</a> {% endcomment %}
+
+
+										<input name ="cancel" type="hidden" value = {{link_info.pk}} >
+										
+										<a class="btn btn-danger" data-toggle="modal" href="{% url 'administrators:cancel_link' link_info.pk %}">Cancelar</a>
+
+
+										
+									
+									{% comment %} <a class="btn btn-white" disabled data-toggle="modal" class="btn btn-primary" href="">Vista previa</a> {% endcomment %}
 									<button  class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit">
 										<strong>Crear link</strong>
 									</button>
