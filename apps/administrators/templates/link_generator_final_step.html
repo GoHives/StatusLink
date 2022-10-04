@@ -191,41 +191,38 @@
 	function preview(){
 		let link_name = document.getElementById('link_info_name').innerHTML
 		document.getElementById('link_name').innerHTML=link_name
-		let previewStepsclass = document.getElementsByClassName('previewStepsclass')
-		//console.log(previewStepsclass)
-		//previewStepsclass[0].shift()
-		//previewStepsclass = dark.shift()
-		
-		
-		
-		previewStepsclass[0].remove()
+		let previewStepsclass = document.getElementsByClassName('previewStepsclass')	
+		//previewStepsclass[0].remove()
 		
 		var test_data="";
-		for (test of previewStepsclass){
+		//console.log('verificar',previewStepsclass)
+
+		//for (const index of previewStepsclass.keys()) {
+		//	console.log(index);
+		//  }
+
+
+		for (let i = 0; i < previewStepsclass.length; i++) {
+			if(i===0){
+				console.log('no hacer nada')
+			}
+			else{
 			
-			test_data += `<div class="ibox float-e-margins">
-				<div class="ibox-content">
-					<div class="row">
-						<div class="col-sm-12 b-r text-center">
-							<h2>${test.value}</h2>
-							<button class="btn btn-default btn-block">En proceso</button>
-							
+				test_data += `<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12 b-r text-center">
+								<h2>${previewStepsclass[i].value}</h2>
+								<button class="btn btn-default btn-block">En proceso</button>
+								
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>`
-			document.getElementById('previewContainer').innerHTML = test_data
-			
-			
-			
-			
+				</div>`
+				document.getElementById('previewContainer').innerHTML = test_data
+				
+			}
 		}
-		
-
-		
-
-		
-		
 
 		$('#preview').modal('show');
 	}
