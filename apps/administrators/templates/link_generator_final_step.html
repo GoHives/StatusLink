@@ -70,26 +70,23 @@
 							</div>
 							<hr>
 
+							
+								
+								
+
 							<div class="form-group">
-								<div class="col-sm-12 ">
-									
-									{% comment %} <a class="btn btn-white" data-toggle="modal" class="btn btn-info" href="">Vista previa</a> {% endcomment %}
+								
+									<input name ="cancel" type="hidden" value = {{link_info.pk}} >
+								
 
+									<a class="btn btn-default" onclick = "preview()">Vista previa</a>
+									<a class="btn btn-danger" data-toggle="modal" onclick = "cancel({{link_info.pk}})">Cancelar</a>
 
-										<input name ="cancel" type="hidden" value = {{link_info.pk}} >
-										
-										<a class="btn btn-default" onclick = "preview()">Vista previa</a>
-										<a style ="margin-left:100px"class="btn btn-danger" data-toggle="modal" onclick = "cancel({{link_info.pk}})">Cancelar</a>
-
-
-										
-									
-									{% comment %} <a class="btn btn-white" disabled data-toggle="modal" class="btn btn-primary" href="">Vista previa</a> {% endcomment %}
-									<button  class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit">
+									<button  class="btn btn-primary" type="submit">
 										<strong>Crear link</strong>
 									</button>
-								</div>
-							</div>							 
+								
+							</div>								
 						</form>
 					</div>
 				</div>
