@@ -13,7 +13,7 @@
 			{% comment %} <h1>Pasos</h1> {% endcomment %}
 			<h2>Segundo paso</h2>
 			<p>
-				Ingrese cada una de las etapas que serán vistas por la persona que recibirá el link. Adicione una nueva etapa dando clic en signo <b>“+”</b> ,y elmine una etapa con el signo <b>"-"</b>.			{% comment %} <p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
+				Ingrese cada una de las etapas que serán vistas por la persona que recibirá el link. Adicione una nueva etapa dando clic en signo <b>“+”</b> , y elmine una etapa con el signo <b>"-"</b>.			{% comment %} <p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
 			<hr>
 			{% comment %} <h2>Detalles</h2>
 			<p>Ingrese el nombre y seleccione el tipo de link que utilizará, seguido de la fecha de expiración.</p> {% endcomment %}
@@ -22,7 +22,7 @@
 	<div class="col-lg-7">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>{{link_info.link_name}}</h5>
+				<h5 id= "link_info_name">{{link_info.link_name}}</h5>
 			</div>
 			<div class="ibox-content">
 				<div class="row">
@@ -30,7 +30,7 @@
 						<form role="form" method="post" enctype="multipart/form-data" >
 							{% csrf_token %}
 							<div class="input-group" style="display:none" id = "step" step="1" >
-								<input name="steps" type="text" class="form-control"> 
+								<input name="steps" type="text" class="form-control previewStepsclass" verify="omitir"> 
 								
 								<span class="input-group-btn"> 
 									<button id="test" onclick="remove(this)" type="button" class="btn btn-secondary" >
@@ -40,7 +40,7 @@
 							</div>
 
 							<div class="input-group">
-								<input name="steps" type="text" class="form-control" placeholder="Escriba el nombre de la etapa" > 
+								<input name="steps" type="text" class="form-control previewStepsclass" placeholder="Escriba el nombre de la etapa" > 
 								<span class="input-group-btn"> 
 									<button onclick="add()" type="button" class="btn btn-primary">
 										+
@@ -54,7 +54,7 @@
 							<div class="text-center">
 								<label>Ingresa un comentario</label> 
 
-								<textarea  required name="comments" placeholder ="" class = "form-control" rows="4" ></textarea>
+								<textarea  name="comments" placeholder ="" class = "form-control" rows="4" ></textarea>
 
 							</div>
 							<br>
@@ -78,7 +78,8 @@
 
 										<input name ="cancel" type="hidden" value = {{link_info.pk}} >
 										
-										<a class="btn btn-danger" data-toggle="modal" href="{% url 'administrators:cancel_link' link_info.pk %}">Cancelar</a>
+										<a class="btn btn-default" onclick = "preview()">Vista previa</a>
+										<a style ="margin-left:100px"class="btn btn-danger" data-toggle="modal" onclick = "cancel({{link_info.pk}})">Cancelar</a>
 
 
 										
@@ -96,52 +97,51 @@
 		</div>
 	</div>
 </div>
-<div id="modal-form" class="modal fade in" aria-hidden="true">
-	<div class="modal-dialog">
+<div id="preview" class="modal fade in" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-sm-12 b-r">
-						<h3 class="m-t-none m-b text-center">¡Status Link generado correctamente!</h3>
-
-						<div class="text-center">
-							{% comment %} <a class=""></a> {% endcomment %}
-
-							<a type="button" class="btn btn-block btn-outline btn-default">https://sta.link./process/step1</a>
-							
+					<div class="col-lg-6">
+						<div class="jumbotron">
+							<h2>Instrucciones</h2>
+							<p>Aquí puedes ver tu proceso</p>
+							<hr>
 						</div>
-						<br>
-						<div class="text-center">
-							<a type="button" class="btn btn-block  btn-default">Copiar al portapapeles</a>
-							
-						</div>
-						<br>
-						<div class="text-center">
-							<a type="button" class="btn btn-block btn-outline btn-success">Código QR</a>
-
-						</div>
-
-						<hr>
-
-						<div class="text-center">
-							<a type="button" class="btn btn-block btn-outline btn-primary">WHATSAPP</a>
-
-						</div>
-
-						<br>
-						<div class="text-center">
-							<a type="button" class="btn btn-block btn-outline btn-info">Generar otro link</a>
-
-						</div>
-
-						<br>
-						<div class="text-center">
-							<a type="button" class="btn btn-block btn-outline btn-default">Ver links</a>
-
-						</div>
-
 					</div>
-					
+					<div class="col-lg-6">
+						<h2><b id="link_name"><b></h2>
+
+						
+						<div id = "previewContainer">
+
+						</div>
+						
+						  
+						
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								Comentarios y adjuntos
+							</div>
+							<div class="panel-body">
+								<p>{{link_info.comments}}</p>
+								<hr>
+								<p> 
+				
+									{% if link_info.attachment %}
+										<a href="{{link_info.attachment.url}}" class="badge badge-primary">Descargar Adjunto</a> 
+									{% else %} 
+										<span class="badge bg-gradient-light">
+											No existe adjunto 
+										</span> 
+									{% endif %} 
+								</p>
+				
+							</div>
+				
+						</div>
+					   
+					</div>
 				</div>
 			</div>
 		</div>
@@ -176,11 +176,55 @@
 		console.log(data.parentElement.parentElement.remove())
 	}
 
+	function cancel(pk){
+		let confirmar = confirm('¿esta seguro que desea cancelar el proceso?')
 
+		if (confirmar == true){
+			console.log('cancelar')
+			location.href = `/cancel/${pk}`
+		}	
+	}
 
-	{% comment %} var original = document.getElementById("ID");
-	var clone = original.cloneNode(true);
-	clone.removeAttribute("id");
-	document.getElementById("ID").appendChild(clone); {% endcomment %}
+	function preview(){
+		let link_name = document.getElementById('link_info_name').innerHTML
+		document.getElementById('link_name').innerHTML=link_name
+		let previewStepsclass = document.getElementsByClassName('previewStepsclass')
+		//console.log(previewStepsclass)
+		//previewStepsclass[0].shift()
+		//previewStepsclass = dark.shift()
+		
+		
+		
+		previewStepsclass[0].remove()
+		
+		var test_data="";
+		for (test of previewStepsclass){
+			
+			test_data += `<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12 b-r text-center">
+							<h2>${test.value}</h2>
+							<button class="btn btn-default btn-block">En proceso</button>
+							
+						</div>
+					</div>
+				</div>
+			</div>`
+			document.getElementById('previewContainer').innerHTML = test_data
+			
+			
+			
+			
+		}
+		
+
+		
+
+		
+		
+
+		$('#preview').modal('show');
+	}
 </script>
 {% endblock %}
