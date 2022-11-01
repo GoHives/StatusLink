@@ -16,7 +16,7 @@ from django.http import JsonResponse
 
 
 
-from ..models import LinkInfo,ProcessSteps
+from ..models import LinkInfo,ProcessSteps,ProcessStatus
 
 class AdminHomeView(TemplateView):
 	def get(self, request, **kwargs):     
@@ -71,9 +71,8 @@ class LinkGeneratorFinalStepView(View):
 				process_steps = ProcessSteps()
 				process_steps.step_name = step
 				process_steps.link_info = last_link
+				process_steps.process_status = ProcessStatus.objects.get(description__icontains="Without Process")
 				process_steps.save()
-
-
 
 		# guardar lo creado en una session
 		self.request.session['last_link'] = last_link.pk
@@ -92,6 +91,7 @@ class LinkDetailView(View):
 
 		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
 		link_info=LinkInfo.objects.get(pk=pk)
+		print('link info',link_info.pk)
 		context['steps'] = processes
 		context['link_info'] = link_info
 		return render(request, 'detail.html',context)
@@ -199,4 +199,20 @@ class FinalLinkView(View):
 
 
 
+class StatusChangeView(View):
+	# context_object_name = 'calendar_homeworks_list'
 
+	def post(self, request, **kwargs):
+		pk=self.kwargs.get('pk', None)
+		status=self.kwargs.get('status', None)
+
+		
+		print('pk',pk,'status',status)
+		print('pk',type(pk),'status',type(status))
+		status = ProcessStatus.objects.get(description__icontains=status)
+
+		process_steps = ProcessSteps.objects.get(pk=pk)
+		process_steps.process_status = status
+		process_steps.save()
+		print('process_steps.process_status',type(process_steps.process_status))
+		return JsonResponse({'status':str(process_steps.process_status)}, status = 200,safe=False)

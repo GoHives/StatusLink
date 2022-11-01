@@ -25,71 +25,74 @@
 <body class="gray-bg">
 
 
-    {% comment %} <div class=" text-center "> {% endcomment %}
-    <div class="wrapper wrapper-content animated  fadeInDown">
-        {% block content %}
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="jumbotron">
-                    <h2>Instrucciones</h2>
-                    <p>Aquí puedes ver tu proceso</p>
-                    <hr>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <h2><b>{{link_info.link_name}}<b></h2>
-                {% for step in steps %}
-                <div class="ibox float-e-margins">
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-sm-12 b-r text-center">
-                                <h2>{{step.step_name}}</h2>
-                               
-                                    {% if step.is_done == True %}
-                                    
-                                        <button class="btn btn-primary btn-block">Etapa finalizada</button>
-                                    {% else %}
-                                        <button class="btn btn-default btn-block">En proceso</button>
-        
-                                    {% endif %}
-                              
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}   
-                
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        Comentarios y adjuntos
-                    </div>
-                    <div class="panel-body">
-                        <p>{{link_info.comments}}</p>
-                        <hr>
-                        <p> 
-        
-                            {% if link_info.attachment %}
-                                <a href="{{link_info.attachment.url}}" class="badge badge-primary">Descargar Adjunto</a> 
-                            {% else %} 
-                                <span class="badge bg-gradient-light">
-                                    No existe adjunto 
-                                </span> 
-                            {% endif %} 
-                        </p>
-        
-                    </div>
-        
-                </div>
-               
-            </div>
-        </div>
-        {% endblock %}
-      
-    </div>
+	{% comment %} <div class=" text-center "> {% endcomment %}
+	<div class="wrapper wrapper-content animated  fadeInDown">
+		{% block content %}
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="jumbotron">
+					<h2>Instrucciones</h2>
+					<p>Aquí puedes ver tu proceso</p>
+					<hr>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<h2><b>{{link_info.link_name}}<b></h2>
+				{% for step in steps %}
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12 b-r text-center">
+								<h2>{{step.step_name}}</h2>
+									
+									{% if step.process_status.description == 'InProcess' %}
+										<button class="btn btn-default btn-block">En proceso</button>
+										
+									{% elif step.process_status.description == 'Assigned' %}
+										<button class="btn btn-secondary btn-block">Asignado</button>
 
-    <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+									{% elif step.process_status.description == 'Finished' %}
+									<button class="btn btn-primary btn-block">Finalizado</button>
+
+									{% endif %}
+							  
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}   
+				
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						Comentarios y adjuntos
+					</div>
+					<div class="panel-body">
+						<p>{{link_info.comments}}</p>
+						<hr>
+						<p> 
+		
+							{% if link_info.attachment %}
+								<a href="{{link_info.attachment.url}}" class="badge badge-primary">Descargar Adjunto</a> 
+							{% else %} 
+								<span class="badge bg-gradient-light">
+									No existe adjunto 
+								</span> 
+							{% endif %} 
+						</p>
+		
+					</div>
+		
+				</div>
+			   
+			</div>
+		</div>
+		{% endblock %}
+	  
+	</div>
+
+	<!-- Mainly scripts -->
+	<script src="js/jquery-3.1.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 
 </body>
 

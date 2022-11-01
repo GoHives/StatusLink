@@ -21,14 +21,25 @@ class LinkInfo(models.Model):
 		"""Return event department name."""
 		return self.link_name
 
+class ProcessStatus(models.Model):
+	id = models.AutoField(db_column='IdProcessStatus', primary_key=True)
+	description = models.CharField(db_column='Description', max_length=150,blank=True, null=True)
+	
+	class Meta:
+		
+		db_table = 'ProcessStatus'
+	
+	def __str__(self):
+		"""Return event department name."""
+		return self.description
+
+
 class ProcessSteps(models.Model):
 	id = models.AutoField(db_column='IdProcessExtra', primary_key=True)
 	step_name = models.TextField(db_column='StepName')
 	link_info = models.ForeignKey(LinkInfo, on_delete=models.CASCADE, db_column='IdLinkInfo')
-	is_done = models.BooleanField(
-		default=False,
-		help_text='Set to true when the user have verified its email address.'
-	)
+	process_status = models.ForeignKey(ProcessStatus, on_delete=models.CASCADE, db_column='ProcessStatus')
+	
 	class Meta:
 		
 		db_table = 'ProcessSteps'
@@ -39,3 +50,4 @@ class ProcessSteps(models.Model):
 
 admin.site.register(LinkInfo)
 admin.site.register(ProcessSteps)
+admin.site.register(ProcessStatus)

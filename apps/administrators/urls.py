@@ -18,7 +18,8 @@ urlpatterns = [
 
 	path('link/get-link/<pk>',GetLinkView.as_view(),name="get_link"),
 	path('link/final-link/<pk>',FinalLinkView.as_view(),name="final_link"),
-
-
 	
+	
+	path('link/status-change/<pk>/<status>',StatusChangeView.as_view(),name="status_change"),
+		
 ]
