@@ -39,7 +39,13 @@ class ProcessSteps(models.Model):
 	step_name = models.TextField(db_column='StepName')
 	link_info = models.ForeignKey(LinkInfo, on_delete=models.CASCADE, db_column='IdLinkInfo')
 	process_status = models.ForeignKey(ProcessStatus, on_delete=models.CASCADE, db_column='ProcessStatus')
-	
+	# process_status = models.ForeignKey(ProcessStatus, on_delete=models.CASCADE, db_column='ProcessStatus')
+	register_date = models.DateField(db_column='RegisterDate', auto_now_add=True, blank=True)
+	calendar_date = models.DateField(db_column='CalendarDate', blank=True,null=True)
+	# register_time= models.TimeField(db_column='RegisterTime', blank=True)
+	# calendar_time= models.TimeField(db_column='CalendarTime', blank=True)
+
+	progress = models.IntegerField(default=0,blank=True,null=True)
 	class Meta:
 		
 		db_table = 'ProcessSteps'

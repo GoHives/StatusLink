@@ -4,6 +4,7 @@
 # Django
 from concurrent.futures import process
 from operator import is_
+from tkinter.ttk import Progressbar
 from urllib import request
 from django.views.generic import View,CreateView,TemplateView,DeleteView,DetailView
 from django.shortcuts import render
@@ -11,9 +12,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.http import JsonResponse
-
-
-
+import json
+from datetime import datetime
+from datetime import timedelta
 
 
 from ..models import LinkInfo,ProcessSteps,ProcessStatus
@@ -71,7 +72,7 @@ class LinkGeneratorFinalStepView(View):
 				process_steps = ProcessSteps()
 				process_steps.step_name = step
 				process_steps.link_info = last_link
-				process_steps.process_status = ProcessStatus.objects.get(description__icontains="Without Process")
+				process_steps.process_status = ProcessStatus.objects.get(description__icontains="WithoutProcess")
 				process_steps.save()
 
 		# guardar lo creado en una session
@@ -191,9 +192,28 @@ class FinalLinkView(View):
 		pk=self.kwargs.get('pk', None)
 
 		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
+		progress_bar = []
+		for x in processes:
+			
+			if x.calendar_date is not None:
+				print('dia de registro',x.register_date)
+			# delta = x.calendar_date - x.register_date
+				print('dia de calendario',x.calendar_date)
+
+
+				# today = datetime.today().strftime('%Y-%m-%d')
+				today = datetime.now().date()+ timedelta(days=3)  
+			
+				percentage = ((today - x.register_date)/x.progress)*100
+				
+				progress_bar.append({'id':x.pk,'percentage':percentage.days})
+				
+		print('verificar progreso',progress_bar)
+
 		link_info=LinkInfo.objects.get(pk=pk)
 		context['steps'] = processes
 		context['link_info'] = link_info
+		context['progress_bar'] = progress_bar
 		return render(request, 'final_link.html',context)
 
 
@@ -209,10 +229,40 @@ class StatusChangeView(View):
 		
 		print('pk',pk,'status',status)
 		print('pk',type(pk),'status',type(status))
-		status = ProcessStatus.objects.get(description__icontains=status)
 
+		
+
+		status = ProcessStatus.objects.get(description__icontains=status)
 		process_steps = ProcessSteps.objects.get(pk=pk)
+
+		if status.description == "InProcess":
+			print('calendar date',process_steps.calendar_date)
+			print('register date',process_steps.register_date)
+			delta = process_steps.calendar_date - process_steps.register_date
+			days = delta.days
+			
+			process_steps.progress = days
+
 		process_steps.process_status = status
 		process_steps.save()
+
+
 		print('process_steps.process_status',type(process_steps.process_status))
 		return JsonResponse({'status':str(process_steps.process_status)}, status = 200,safe=False)
+
+		
+class SetDateView(View):
+	# context_object_name = 'calendar_homeworks_list'
+
+	def post(self, request, **kwargs):
+		pk=self.kwargs.get('pk', None)
+		
+		data = json.load(request)
+		calendar_value = data['calendarValue']
+		
+		process_steps = ProcessSteps.objects.get(pk=pk)
+		process_steps.calendar_date = calendar_value
+		process_steps.save()
+		
+		return JsonResponse({'status':'ok'}, status = 200,safe=False)
+		# return JsonResponse({'status':str(process_steps.process_status)}, status = 200,safe=False)

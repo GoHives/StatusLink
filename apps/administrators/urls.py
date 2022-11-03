@@ -21,5 +21,5 @@ urlpatterns = [
 	
 	
 	path('link/status-change/<pk>/<status>',StatusChangeView.as_view(),name="status_change"),
-		
+	path('link/set-date/<pk>',SetDateView.as_view(),name="set_date_view"),
 ]
