@@ -46,6 +46,7 @@ class ProcessSteps(models.Model):
 	# calendar_time= models.TimeField(db_column='CalendarTime', blank=True)
 
 	progress = models.IntegerField(default=0,blank=True,null=True)
+	hours = models.IntegerField(default=0,blank=True,null=True)
 	class Meta:
 		
 		db_table = 'ProcessSteps'

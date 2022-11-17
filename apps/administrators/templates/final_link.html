@@ -61,8 +61,13 @@
 										{% for x in progress_bar %}
 											
 											{% if x.id == step.pk %}
-											
-												progreso: {{x.percentage}}%
+												{% if x.percentage <= 100 %}
+													progreso: {{x.percentage}}%
+												{% else %}
+													progreso: 100%
+												{% endif %}
+											<br>
+											<br>
 											<div class="progress progress-striped active">
 												<div style="width: {{x.percentage}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar progress-bar-primary">
 													<span class="sr-only">40% Complete (success)</span>

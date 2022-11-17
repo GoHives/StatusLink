@@ -234,14 +234,15 @@ class StatusChangeView(View):
 
 		status = ProcessStatus.objects.get(description__icontains=status)
 		process_steps = ProcessSteps.objects.get(pk=pk)
-
+		
 		if status.description == "InProcess":
-			print('calendar date',process_steps.calendar_date)
-			print('register date',process_steps.register_date)
-			delta = process_steps.calendar_date - process_steps.register_date
-			days = delta.days
-			
-			process_steps.progress = days
+			if process_steps.calendar_date != None:
+				print('calendar date',process_steps.calendar_date)
+				print('register date',process_steps.register_date)
+				delta = process_steps.calendar_date - process_steps.register_date
+				days = delta.days
+				
+				process_steps.progress = days
 
 		process_steps.process_status = status
 		process_steps.save()
@@ -262,6 +263,23 @@ class SetDateView(View):
 		
 		process_steps = ProcessSteps.objects.get(pk=pk)
 		process_steps.calendar_date = calendar_value
+		process_steps.save()
+		
+		return JsonResponse({'status':'ok'}, status = 200,safe=False)
+		# return JsonResponse({'status':str(process_steps.process_status)}, status = 200,safe=False)
+
+		
+class SetHourView(View):
+	# context_object_name = 'calendar_homeworks_list'
+
+	def post(self, request, **kwargs):
+		pk=self.kwargs.get('pk', None)
+		
+		data = json.load(request)
+		hour_value = data['hourValue']
+		
+		process_steps = ProcessSteps.objects.get(pk=pk)
+		process_steps.hours = hour_value
 		process_steps.save()
 		
 		return JsonResponse({'status':'ok'}, status = 200,safe=False)

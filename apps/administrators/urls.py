@@ -22,4 +22,5 @@ urlpatterns = [
 	
 	path('link/status-change/<pk>/<status>',StatusChangeView.as_view(),name="status_change"),
 	path('link/set-date/<pk>',SetDateView.as_view(),name="set_date_view"),
+	path('link/set-hour/<pk>',SetHourView.as_view(),name="set_hour_view"),
 ]
