@@ -6,7 +6,6 @@ __pycache__/
 
 conf/settings/local_settings.py
 local_settings.py
-db.sqlite3
 
 #Config
 # conf/wsgi.py

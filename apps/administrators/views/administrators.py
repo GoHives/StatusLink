@@ -197,16 +197,23 @@ class FinalLinkView(View):
 			
 			if x.calendar_date is not None:
 				print('dia de registro',x.register_date)
-			# delta = x.calendar_date - x.register_date
+				
+				# delta = x.calendar_date - x.register_date
 				print('dia de calendario',x.calendar_date)
 
 
 				# today = datetime.today().strftime('%Y-%m-%d')
-				today = datetime.now().date()+ timedelta(days=3)  
-			
-				percentage = ((today - x.register_date)/x.progress)*100
-				
-				progress_bar.append({'id':x.pk,'percentage':percentage.days})
+				today = datetime.now().date()
+				print('verificar progreso',x.progress)
+				print('today',today)
+				print('register date',x.register_date)
+				if x.progress > 0:
+					
+					percentage = ((today - x.register_date)/x.progress)*100
+					print('verificar percentage',x.register_date)
+					progress_bar.append({'id':x.pk,'percentage':percentage.days})
+				else:
+					percentage = 0;
 				
 		print('verificar progreso',progress_bar)
 
