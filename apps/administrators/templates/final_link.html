@@ -59,13 +59,17 @@
 									{% if step.process_status.description == 'InProcess' %}
 									
 										{% for x in progress_bar %}
-											
+											Fecha de finalización: {{step.calendar_date}}
+											<br>
+											Hora(s): {{step.hours}}
+											<br>
 											{% if x.id == step.pk %}
 												{% if x.percentage <= 100 %}
 													progreso: {{x.percentage}}%
 												{% else %}
 													progreso: 100%
 												{% endif %}
+												
 											<br>
 											<br>
 											<div class="progress progress-striped active">

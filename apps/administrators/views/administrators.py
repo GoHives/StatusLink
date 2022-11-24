@@ -99,7 +99,7 @@ class LinkDetailView(View):
 
 	def post(self, request, **kwargs):     
 		# comment = request.POST.get('comment',None)
-		
+		print('hice post')
 		process_steps= ProcessSteps.objects.get(pk=request.POST.get('step', None))
 		if process_steps.is_done == False:
 			process_steps.is_done=True
@@ -194,28 +194,29 @@ class FinalLinkView(View):
 		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
 		progress_bar = []
 		for x in processes:
-			
+			# print(x.calendar_date)
 			if x.calendar_date is not None:
 				print('dia de registro',x.register_date)
 				
 				# delta = x.calendar_date - x.register_date
 				print('dia de calendario',x.calendar_date)
-
+				
 
 				# today = datetime.today().strftime('%Y-%m-%d')
+				# This add (n) days este codigo hace tal cosa no borrar
 				today = datetime.now().date()
 				print('verificar progreso',x.progress)
-				print('today',today)
+				# print('today',today)
 				print('register date',x.register_date)
 				if x.progress > 0:
 					
 					percentage = ((today - x.register_date)/x.progress)*100
-					print('verificar percentage',x.register_date)
 					progress_bar.append({'id':x.pk,'percentage':percentage.days})
 				else:
 					percentage = 0;
-				
-		print('verificar progreso',progress_bar)
+			else:
+				print('el proceso se tiene que hacer con las horas')	
+		# print('verificar progreso',progress_bar)
 
 		link_info=LinkInfo.objects.get(pk=pk)
 		context['steps'] = processes
@@ -270,6 +271,7 @@ class SetDateView(View):
 		
 		process_steps = ProcessSteps.objects.get(pk=pk)
 		process_steps.calendar_date = calendar_value
+		process_steps.hours = None
 		process_steps.save()
 		
 		return JsonResponse({'status':'ok'}, status = 200,safe=False)
@@ -287,6 +289,7 @@ class SetHourView(View):
 		
 		process_steps = ProcessSteps.objects.get(pk=pk)
 		process_steps.hours = hour_value
+		process_steps.calendar_date = None
 		process_steps.save()
 		
 		return JsonResponse({'status':'ok'}, status = 200,safe=False)
