@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 import json
-from datetime import datetime
+from datetime import datetime,timezone
 from datetime import timedelta
 
 
@@ -92,9 +92,19 @@ class LinkDetailView(View):
 
 		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
 		link_info=LinkInfo.objects.get(pk=pk)
-		print('link info',link_info.pk)
+
+		buttons = []
+		for x in processes:
+			print()
+			buttons.append({'id':x.id,'range':range(1,int((x.hours*60)/30+1))})
+
 		context['steps'] = processes
 		context['link_info'] = link_info
+		context['buttons'] = buttons
+
+		
+		print('buttons',buttons)
+			
 		return render(request, 'detail.html',context)
 
 	def post(self, request, **kwargs):     
@@ -128,8 +138,6 @@ class LinkDetailView(View):
 	def get_success_url(self):
 		return reverse('administrators:opened_links')
 
-		
-
 
 class OpenedLinksView(CreateView):
 	def get(self, request, **kwargs):
@@ -148,6 +156,7 @@ class OpenedLinksView(CreateView):
 			return self.request.session['last_link']
 		else:
 			return None
+
 
 class LinksDeleteView(DeleteView):
 	model = LinkInfo
@@ -193,6 +202,7 @@ class FinalLinkView(View):
 
 		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
 		progress_bar = []
+		elapsed_time = []
 		for x in processes:
 			# print(x.calendar_date)
 			if x.calendar_date is not None:
@@ -203,7 +213,7 @@ class FinalLinkView(View):
 				
 
 				# today = datetime.today().strftime('%Y-%m-%d')
-				# This add (n) days este codigo hace tal cosa no borrar
+				# This add (n) days no borrar
 				today = datetime.now().date()
 				print('verificar progreso',x.progress)
 				# print('today',today)
@@ -215,16 +225,32 @@ class FinalLinkView(View):
 				else:
 					percentage = 0;
 			else:
-				print('el proceso se tiene que hacer con las horas')	
-		# print('verificar progreso',progress_bar)
+				print('interesante')
+				# print('register date type',type(x.register_date_time),'register date',x.register_date_time)
+				# dt = datetime.strptime(str(x.register_date_time), '%Y-%m-%d %H:%M:%S')
+				# print('register end date',x.register_date_time+timedelta(hours=3))
+				# today = datetime.now()
+				# today = datetime.now(timezone.utc)
 
+				# print('todays datetime',today)
+				print('horas',x.hours)
+				print('minutos totales',x.hours * 60)
+				print('etapas',(x.hours * 60)/30)
+				elapsed_time.append({'id':x.pk,'progress':(x.hours * 60 )/30})
+				# print('registrar ')
+				# print('register date just date',x.register_date_time.date())
+				# print('resta',today-x.register_date_time)
+				# elapsed_time = today - x.register_date_time
+				# print('el proceso se tiene que hacer con las horas',elapsed_time)	
+		# print('verificar progreso',progress_bar)
+		
 		link_info=LinkInfo.objects.get(pk=pk)
 		context['steps'] = processes
+		context['range_hours'] = range(1,processes.hours)
 		context['link_info'] = link_info
 		context['progress_bar'] = progress_bar
+		context['elapsed_time'] = elapsed_time
 		return render(request, 'final_link.html',context)
-
-
 
 
 class StatusChangeView(View):
@@ -286,11 +312,11 @@ class SetHourView(View):
 		
 		data = json.load(request)
 		hour_value = data['hourValue']
-		
+		print('verificar pk',pk)
 		process_steps = ProcessSteps.objects.get(pk=pk)
 		process_steps.hours = hour_value
-		process_steps.calendar_date = None
+		process_steps.register_date_time = datetime.today()
 		process_steps.save()
 		
-		return JsonResponse({'status':'ok'}, status = 200,safe=False)
+		return JsonResponse({'pk':process_steps.pk}, status = 200,safe=False)
 		# return JsonResponse({'status':str(process_steps.process_status)}, status = 200,safe=False)

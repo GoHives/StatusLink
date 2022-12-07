@@ -21,6 +21,7 @@ class LinkInfo(models.Model):
 		"""Return event department name."""
 		return self.link_name
 
+
 class ProcessStatus(models.Model):
 	id = models.AutoField(db_column='IdProcessStatus', primary_key=True)
 	description = models.CharField(db_column='Description', max_length=150,blank=True, null=True)
@@ -44,7 +45,7 @@ class ProcessSteps(models.Model):
 	calendar_date = models.DateField(db_column='CalendarDate', blank=True,null=True)
 	# register_time= models.TimeField(db_column='RegisterTime', blank=True)
 	# calendar_time= models.TimeField(db_column='CalendarTime', blank=True)
-
+	register_date_time  = models.DateTimeField(db_column="RegisterDateTime",blank=True,null=True)
 	progress = models.IntegerField(default=0,blank=True,null=True)
 	hours = models.IntegerField(default=0,blank=True,null=True)
 	class Meta:
@@ -54,6 +55,7 @@ class ProcessSteps(models.Model):
 	def __str__(self):
 		"""Return event department name."""
 		return self.step_name
+
 
 admin.site.register(LinkInfo)
 admin.site.register(ProcessSteps)

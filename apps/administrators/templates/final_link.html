@@ -39,6 +39,7 @@
 			<div class="col-lg-6">
 				<h2><b>{{link_info.link_name}}<b></h2>
 				{% for step in steps %}
+
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
 						<div class="row">
@@ -47,7 +48,6 @@
 									
 									{% if step.process_status.description == 'InProcess' %}
 										<button class="btn btn-default btn-block">En proceso</button>
-										
 									{% elif step.process_status.description == 'Assigned' %}
 										<button class="btn btn-secondary btn-block">Asignado</button>
 
@@ -57,12 +57,11 @@
 									{% endif %}
 
 									{% if step.process_status.description == 'InProcess' %}
-									
+										
 										{% for x in progress_bar %}
 											Fecha de finalización: {{step.calendar_date}}
-											<br>
-											Hora(s): {{step.hours}}
-											<br>
+											
+											
 											{% if x.id == step.pk %}
 												{% if x.percentage <= 100 %}
 													progreso: {{x.percentage}}%
@@ -80,6 +79,25 @@
 											{% endif %}
 
 										{% endfor %} 
+
+										{% for x in elapsed_time %}
+											
+
+											{% if x.id == step.pk %}
+											<br>
+											Hora(s): {{step.hours}}
+											
+											<br>
+
+											<div class="progress progress-striped active">
+												<div style="width: {{x.progress}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar progress-bar-primary">
+													<span class="sr-only">40% Complete (success)</span>
+												</div>
+											</div>
+
+											
+										{% endif %}
+										{% endfor %}
 										
 									{% endif %}
 							</div>
@@ -119,6 +137,16 @@
 	<!-- Mainly scripts -->
 	<script src="js/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+	<script>
+		var x = setInterval(function() {
+			
+			console.log('{{elapsed_time}}');
+			console.log('{{elapsed_time}}');
+		}, 1000);
+
+		
+	</script>
+	
 
 </body>
 
