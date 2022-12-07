@@ -173,8 +173,11 @@
 	}
 	function saveColor(pk,thisel){
 		let boxId = window.localStorage.getItem('boxId');
-		let element = document.getElementById(boxId);
-		element.setAttribute('class','btn btn-sm btn-success')
+		if (boxId != null) {
+			let element = document.getElementById(boxId);
+			element.setAttribute('class','btn btn-sm btn-success')
+		}
+		
 
 		let el = document.getElementById(`${thisel}`);
 		window.localStorage.setItem('boxId',thisel)
