@@ -200,7 +200,10 @@ class FinalLinkView(View):
 		context={}
 		pk=self.kwargs.get('pk', None)
 
+		
 		processes = ProcessSteps.objects.filter(link_info=pk).order_by('pk')
+			
+		print('verificar pk',pk)
 		progress_bar = []
 		elapsed_time = []
 		for x in processes:
@@ -243,10 +246,14 @@ class FinalLinkView(View):
 				# elapsed_time = today - x.register_date_time
 				# print('el proceso se tiene que hacer con las horas',elapsed_time)	
 		# print('verificar progreso',progress_bar)
-		
-		link_info=LinkInfo.objects.get(pk=pk)
+		print('procesos',processes)
+		# if processes
+		try:
+			link_info=LinkInfo.objects.get(pk=pk)
+		except LinkInfo.DoesNotExist:
+			link_info = None
 		context['steps'] = processes
-		context['range_hours'] = range(1,processes.hours)
+		# context['range_hours'] = range(1,hours)
 		context['link_info'] = link_info
 		context['progress_bar'] = progress_bar
 		context['elapsed_time'] = elapsed_time
